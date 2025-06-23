@@ -19,7 +19,7 @@ import type { Country, Region } from '@/types/services/nnas/regions';
 const router = express.Router();
 
 const accountSettingsSchema = z.object({
-	birthdate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+	birthdate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(date => date.split('-').every(value => Number(value) > 0)),
 	gender: z.enum(['M', 'F']),
 	tz_name: z.string(),
 	region: z.coerce.number(),
