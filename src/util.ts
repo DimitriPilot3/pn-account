@@ -40,10 +40,8 @@ const NNID_PUNCTUATION_START_REGEX = /^[_\-.]/;
 const NNID_PUNCTUATION_END_REGEX = /[_\-.]$/;
 const NNID_PUNCTUATION_DUPLICATE_REGEX = /[_\-.]{2,}/;
 
-// * This sucks
-const PASSWORD_WORD_OR_NUMBER_REGEX = /(?=.*[a-zA-Z])(?=.*\d).*/;
-const PASSWORD_WORD_OR_PUNCTUATION_REGEX = /(?=.*[a-zA-Z])(?=.*[_\-.]).*/;
-const PASSWORD_NUMBER_OR_PUNCTUATION_REGEX = /(?=.*\d)(?=.*[_\-.]).*/;
+const PASSWORD_VALID_CHARACTERS_REGEX = /^[\x21-\x7E]*$/;
+const PASSWORD_VALID_PUNCTUATION_REGEX = /[.,'_:;`\\/()[\]{}*"~&#?!@|$<>+\-=^%]/;
 const PASSWORD_REPEATED_CHARACTER_REGEX = /(.)\1\1/;
 
 // * Checks if the input NNID username passes all validation rules
@@ -66,7 +64,7 @@ export function checkNNIDUsernameMaxLength(username: string): boolean {
 	return username.length <= 16;
 }
 
-// * Ensures the NNID username only contains valid characters
+// * Ensures the NNID username only contains valid characters (letters, numbers, periods, dashes, underscores)
 export function checkNNIDUsernameValidCharacters(username: string): boolean {
 	return NNID_VALID_CHARACTERS_REGEX.test(username);
 }
@@ -106,10 +104,12 @@ export function checkNNIDPasswordMaxLength(password: string): boolean {
 	return password.length <= 16;
 }
 
-// * Ensures the NNID password has a mix of letters, numbers, and/or punctuation characters.
-// * Passwords must contain letters from at least 2 of the 3 groups (letters, numbers, and punctuation)
+// * Ensures the NNID password contains a mix of uppercase letters, lowercase letters, numbers, and/or punctuation.
+// * It must contain characters from at least 2 of the 4 aforementioned groups.
 export function checkNNIDPasswordAtLeast2CharacterGroups(password: string): boolean {
-	return PASSWORD_WORD_OR_NUMBER_REGEX.test(password) || PASSWORD_WORD_OR_PUNCTUATION_REGEX.test(password) || PASSWORD_NUMBER_OR_PUNCTUATION_REGEX.test(password);
+	var groups = (/[a-z]/.test(password) ? 1 : 0) + (/[A-Z]/.test(password) ? 1 : 0) +
+			(/[0-9]/.test(password) ? 1 : 0) + (PASSWORD_VALID_PUNCTUATION_REGEX.test(password) ? 1 : 0);
+	return groups >= 2;
 }
 
 // * Ensures the NNID password does not have 3 or more repeating characters
