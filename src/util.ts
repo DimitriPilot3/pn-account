@@ -86,7 +86,7 @@ export function checkNNIDUsernameDuplicate(username: string): boolean {
 
 // * Checks if the input NNID password passes all validation rules
 export function checkNNIDPasswordValid(password: string): boolean {
-	return checkNNIDPasswordLength(password) && checkNNIDPasswordAtLeast2CharacterGroups(password) && checkNNIDPasswordRepeatCharacters(password);
+	return checkNNIDPasswordLength(password) && checkNNIDPasswordValidCharacters(password) && checkNNIDPasswordAtLeast2CharacterGroups(password) && checkNNIDPasswordRepeatCharacters(password);
 }
 
 // * Ensures the NNID password meets the expected size requirements
@@ -102,6 +102,12 @@ export function checkNNIDPasswordMinLength(password: string): boolean {
 // * Ensures the NNID password is at most 16 characters long
 export function checkNNIDPasswordMaxLength(password: string): boolean {
 	return password.length <= 16;
+}
+
+// * Ensures the NNID password only contains valid characters (any printable 7-bit ASCII characters)
+// * This is the exact set of characters that the on-screen keyboard (on consoles) can type into the password box
+export function checkNNIDPasswordValidCharacters(password: string): boolean {
+	return PASSWORD_VALID_CHARACTERS_REGEX.test(password);
 }
 
 // * Ensures the NNID password contains a mix of uppercase letters, lowercase letters, numbers, and/or punctuation.
